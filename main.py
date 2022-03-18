@@ -22,7 +22,7 @@ def main(laravel_session):  # 参数为cookie里的laravel_session 自行抓包�
     }
     # 构造请求头
     headers = {
-        # 'User-Agent': "Mozilla/5.0 (iPhone; CPU iPhone OS 15_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.18(0x18001234) NetType/WIFI Language/zh_CN",
+        'User-Agent': "Mozilla/5.0 (iPhone; CPU iPhone OS 15_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.18(0x18001234) NetType/WIFI Language/zh_CN",
         'Cookie': "laravel_session=" + laravel_session  # 抓包获取
         # "laravel_session=6bkiNtcb7Nhbe73AYoODf90H5xpUfdDMScNtFF4F"
         # 'Cookie':"8rAucTd84mpMLxilmCjeWO08rbtC7opDnrwo9YvJ"
