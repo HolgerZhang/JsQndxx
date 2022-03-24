@@ -30,4 +30,4 @@ Thanks:  [yuzaii/JsQndxx_Python](https://github.com/yuzaii/JsQndxx_Python)
 TODO List:
 
 - [ ] 添加定时任务功能
-- [x] iOS版快捷指令：https://www.icloud.com/shortcuts/056c9a987d374d7c93e3bf82d9827e2d
+- [x] iOS版快捷指令：https://www.icloud.com/shortcuts/3d10902f9ebb4b4bb520df301a9912a1
