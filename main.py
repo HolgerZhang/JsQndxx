@@ -8,13 +8,54 @@
 import re
 import sys
 import traceback
+import warnings
 
 import requests
 import urllib3
 from bs4 import BeautifulSoup
 
 
+class QndxxBot:
+    def __init__(self, laravel_session: str):
+        self._session = requests.session()
+        self._laravel_session = laravel_session
+
+    def _header(self):
+        return {
+            'User-Agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) MicroMessenger/6.8.0(0x16080000) MacWechat/3.7(0x13070010) Safari/605.1.15 NetType/WIFI",
+            'Cookie': "laravel_session=" + self._laravel_session
+        }
+
+    def get_latest_lessons(self):
+        url = "https://service.jiangsugqt.org/api/cjdList"  # 江苏省青年大学习成绩单接口
+        res = self._session.post(url=url, headers=self._header(), params=dict(page="1", limit="5"))
+        try:
+            res = res.json()  # 返回结果转json
+            return res['data']
+        except requests.exceptions.JSONDecodeError:
+            return None
+
+    def learn_lesson(self, lesson_id):
+        url = "https://service.jiangsugqt.org/api/doLesson"  # 江苏省青年大学习接口
+        res = self._session.post(url=url, headers=self._header(), params=dict(lesson_id=lesson_id))  # 发送请求
+        try:
+            res = res.json()  # 返回结果转json
+            return res
+        except requests.exceptions.JSONDecodeError:
+            return None
+
+    def user_info(self):
+        url = 'https://service.jiangsugqt.org/api/my'
+        res = self._session.get(url=url, headers=self._header())  # 发送请求
+        try:
+            res = res.json()  # 返回结果转json
+            return res['data']
+        except requests.exceptions.JSONDecodeError:
+            return None
+
+
 def main(laravel_session):  # 参数为cookie里的laravel_session 自行抓包获取
+    warnings.warn("this method is deprecated", DeprecationWarning)
     ret = {'laravel_session': laravel_session}
     s = requests.session()  # 创建会话
     loginurl = "https://service.jiangsugqt.org/youth/lesson"  # 江苏省青年大学习接口
@@ -70,12 +111,48 @@ def main(laravel_session):  # 参数为cookie里的laravel_session 自行抓包�
     return ret
 
 
+def learn(laravel_session):
+    result = {
+        'success': False,
+        'message': '',
+        'user': '',
+        'lesson': '',
+    }
+    bot = QndxxBot(laravel_session)
+    user = bot.user_info()
+    if user is None:
+        result['message'] = '获取用户信息失败'
+        return result
+    result['user'] = f"用户编号 {user['user_num']}, 用户名 {user['username']}, 所属组织 {user['orga']}"
+    lesson_dict = bot.get_latest_lessons()
+    print(lesson_dict)
+    if lesson_dict is None:
+        result['message'] = '获取课程信息失败'
+        return result
+    lesson_id = lesson_dict[0]['id']
+    learn_result = bot.learn_lesson(lesson_id)
+    print(learn_result)
+    if learn_result is None:
+        result['message'] = 'Qndxx执行失败'
+        return result
+    result['success'] = learn_result["status"] == 1 and learn_result["message"] == "操作成功"
+    result['message'] = learn_result["message"]
+    lesson_dict = bot.get_latest_lessons()
+    print(lesson_dict)
+    if lesson_dict is None or lesson_id != lesson_dict[0]['id']:
+        result['message'] += ' 课程校验失败，请尝试重新执行'
+        if lesson_dict is not None:
+            result['lesson'] = f"课程 {lesson_dict[0]['title']}, ID={lesson_dict[0]['id']}!={lesson_id}, 学习状态 {lesson_dict[0]['has_learn']}"
+        return result
+    result['lesson'] = f"课程 {lesson_dict[0]['title']}, ID={lesson_dict[0]['id']}, 学习状态 {lesson_dict[0]['has_learn']}"
+    return result
+
+
 if __name__ == '__main__':
-    for i, laravel_session in enumerate(sys.argv[1:]):
-        print('-' * 40)
-        print('[%d] 青年大学习开始执行 laravel_session = %s' % (i, laravel_session))
+    for i, laravel in enumerate(sys.argv[1:]):
+        print('[%d] 青年大学习开始执行 laravel_session = %s' % (i, laravel))
         try:
-            main(laravel_session)
+            print(learn(laravel))
         except Exception:
             print('[%d] 运行异常：\n%s' % (i, traceback.format_exc()))
         print('[%d] 青年大学习运行结束\n' % i)

@@ -14,8 +14,8 @@
 - 启动 Charles 抓包。
 - 在电脑版微信中访问青年大学习，或使用微信打开链接：https://service.jiangsugqt.org/youth/lesson （如下）
   ![link](img/Snipaste_2022-03-24_11-09-28.png)
-- 选中 Host 为 service.jiangsugqt.org 中的请求，点击 Contents - Cookies ，记录名为 laravel_session 的 cookie。
-  ![laravel_session](img/Snipaste_2022-03-24_11-08-00.png)
+- 选中 Host 为 service.jiangsugqt.org/api 中的请求，点击 Contents - Cookies ，记录名为 laravel_session 的 cookie。
+  ![image-20230409224721588](img/image-20230409224721588.png)
 - 将上一步记录的 laravel_session 作为命令行参数传入 `main.py` 脚本即可。
 
 `server.py` 脚本：
@@ -25,9 +25,8 @@
 
 ### 创作不易 希望能得到您一颗小星星⭐️ 十分感谢
 
-Thanks:  [yuzaii/JsQndxx_Python](https://github.com/yuzaii/JsQndxx_Python) 
+Thanks:  [~~yuzaii/JsQndxx_Python~~](https://github.com/yuzaii/JsQndxx_Python) [weifeng2356/JsQndxx](https://github.com/weifeng2356/JsQndxx)
 
 TODO List:
 
-- [ ] 添加定时任务功能
-- [x] iOS版快捷指令：https://www.icloud.com/shortcuts/3d10902f9ebb4b4bb520df301a9912a1
+- [x] iOS版快捷指令：https://www.icloud.com/shortcuts/9262d9525cee4681b2b496dd1946cad5

@@ -5,12 +5,11 @@
 @file:server.py
 @time:2022/03/24
 """
-import json
 
 import uvicorn
 from fastapi import FastAPI
 
-from main import main
+from main import learn
 
 app = FastAPI()
 
@@ -23,9 +22,9 @@ async def index():
 @app.get("/session/{laravel_session}")
 async def session(laravel_session: str):
     try:
-        ret = main(laravel_session)
+        ret = learn(laravel_session)
     except Exception as e:
-        ret = {'success': False, '返回结果': e.args}
+        ret = {'success': False, 'message': ';'.join(map(str, e.args)), 'user': '', 'lesson': '', }
     return ret
 
 
